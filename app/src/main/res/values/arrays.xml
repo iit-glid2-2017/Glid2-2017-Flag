@@ -1,0 +1,45 @@
+<resources>
+    <string-array name="countries_names_array">
+        <item>Algeria</item>
+        <item>Argentina</item>
+        <item>Brazil</item>
+        <item>Germany</item>
+        <item>Morocco</item>
+        <item>Portugal</item>
+        <item>Senegal</item>
+        <item>Tunisia</item>
+        <item>Turkey</item>
+        <item>UAE</item>
+        <item>Uruguay</item>
+    </string-array>
+
+    <integer-array name="countries_ids_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+    </integer-array>
+
+    <integer-array name="countries_drawables_array">
+        <item>@drawable/algeria</item>
+        <item>@drawable/argentina</item>
+        <item>@drawable/brazil</item>
+        <item>@drawable/germany</item>
+        <item>@drawable/morocco</item>
+        <item>@drawable/portugal</item>
+        <item>@drawable/senegal</item>
+        <item>@drawable/tunisia</item>
+        <item>@drawable/turkey</item>
+        <item>@drawable/uae</item>
+        <item>@drawable/uruguay</item>
+    </integer-array>
+
+
+</resources>

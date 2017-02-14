@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Flag Quiz</string>
+    <string name="score_label">Score: %1$d correct answers</string>
 </resources>

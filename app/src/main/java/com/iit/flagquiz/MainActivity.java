@@ -1,8 +1,8 @@
 package com.iit.flagquiz;
 
 import android.content.res.TypedArray;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +13,6 @@ import com.iit.flagquiz.core.Flag;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mFlagTitle3;
     private TextView mFlagTitle4;
     private TextView mScoreText;
-
 
     private ArrayList<Flag> mQuestionFlags;
     private int mQuestionIndex = 0;
@@ -66,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mQuestionFlags.clear();
 
-
         Random random = new Random();
         int randomInt = random.nextInt(mFlagList.size());
         mQuestionFlags.add(mFlagList.get(mQuestionIndex));
@@ -84,15 +81,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Collections.shuffle(mQuestionFlags);
 
-        TypedArray imgs = getResources().obtainTypedArray(R.array.countries_drawables_array);
-
-        mFlagImg.setImageResource(imgs.getResourceId(mFlagList.get(mQuestionIndex).getId() - 1, -1));
+        mFlagImg.setImageResource(mFlagList.get(mQuestionIndex).getImgRes());
 
         mFlagTitle1.setText(mQuestionFlags.get(0).getTitle());
         mFlagTitle2.setText(mQuestionFlags.get(1).getTitle());
         mFlagTitle3.setText(mQuestionFlags.get(2).getTitle());
         mFlagTitle4.setText(mQuestionFlags.get(3).getTitle());
-
 
     }
 
@@ -100,17 +94,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFlagList = new ArrayList<>();
 
         int[] idArray = getResources().getIntArray(R.array.countries_ids_array);
-        int[] imgArray = getResources().getIntArray(R.array.countries_drawables_array);
         String[] nameArray = getResources().getStringArray(R.array.countries_names_array);
 
+        TypedArray flagImages = getResources().obtainTypedArray(R.array.countries_drawables_array);
 
         for (int i = 0; i < idArray.length; i++) {
-            Flag flag = new Flag(idArray[i], imgArray[i], nameArray[i]);
+            Flag flag = new Flag(idArray[i], flagImages.getResourceId(i, -1), nameArray[i]);
             mFlagList.add(flag);
         }
 
         Collections.shuffle(mFlagList);
         mQuestionFlags = new ArrayList<>(4);
+        flagImages.recycle();
     }
 
 
@@ -137,12 +132,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Flag correctFlag = mFlagList.get(mQuestionIndex);
         Flag answerFlag = mQuestionFlags.get(answer);
 
+        Log.v("validate", "before ops");
+        Log.v("validate", "correctFlag id = " + correctFlag.getId());
+        Log.v("validate", "answerFlag id = " + answerFlag.getId());
+
+        Log.v("validate", "correctFlag name = " + correctFlag.getTitle());
+        Log.v("validate", "answerFlag name = " + answerFlag.getTitle());
+
+
+        Log.v("validate", "answer = " + answer);
+        Log.v("validate", "mScore = " + mScore);
+        Log.v("validate", "mWrongAnswer = " + mWrongAnswer);
+        Log.v("validate", "mQuestionIndex = " + mQuestionIndex);
 
         if (correctFlag.getId() == answerFlag.getId()) {
             mScore++;
             mScoreText.setText(String.format(getResources().getString(R.string.score_label), mScore));
+            Log.v("validate", "correct answer");
         } else {
             mWrongAnswer--;
+            Log.v("validate", "wrong answer");
+        }
+
+        mQuestionIndex++;
+        if (mQuestionIndex == mFlagList.size()) {
+            Collections.shuffle(mFlagList);
+            mQuestionIndex = 0;
         }
 
         if (mWrongAnswer != 0) {
@@ -153,12 +168,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mWrongAnswer = 3;
             Toast.makeText(this, "you lose", Toast.LENGTH_LONG).show();
         }
-        mQuestionIndex++;
-        if (mQuestionIndex == mFlagList.size()) {
-            Collections.shuffle(mFlagList);
-            mQuestionIndex = 0;
-        }
+
+        Log.v("validate", "after ops");
+        Log.v("validate", "mScore = " + mScore);
+        Log.v("validate", "mWrongAnswer = " + mWrongAnswer);
+        Log.v("validate", "mQuestionIndex = " + mQuestionIndex);
     }
-
-
-};
+}

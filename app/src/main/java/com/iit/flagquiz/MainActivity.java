@@ -2,12 +2,14 @@ package com.iit.flagquiz;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.iit.flagquiz.core.Flag;
 
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ResultDialog.ResultDialogListener {
 
     private ArrayList<Flag> mFlagList;
 
@@ -32,12 +34,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int mScore = 0;
     private int mWrongAnswer = 3;
 
+    private View mView;
+
+    private Handler mHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mHandler = new Handler();
         initViews();
 
         play();
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initViews() {
+        mView = findViewById(R.id.activity_main);
         mFlagImg = (ImageView) findViewById(R.id.flag_img);
         mFlagTitle1 = (TextView) findViewById(R.id.flag_text_1);
         mFlagTitle1.setOnClickListener(this);
@@ -161,17 +168,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (mWrongAnswer != 0) {
-            play();
+            if (correctFlag.getId() == answerFlag.getId()) {
+                Snackbar.make(mView, "good", Snackbar.LENGTH_SHORT).show();
+
+            } else {
+                Snackbar.make(mView, "pfff", Snackbar.LENGTH_SHORT).show();
+            }
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    play();
+                }
+            }, 2000);
+
+
         } else {
             Log.v("score", "score = " + mScore);
-            mScore = 0;
-            mWrongAnswer = 3;
-            Toast.makeText(this, "you lose", Toast.LENGTH_LONG).show();
+
+            ResultDialog resultDialog = ResultDialog.newInstance(mScore, this);
+            resultDialog.show(getSupportFragmentManager(), null);
+
         }
 
         Log.v("validate", "after ops");
         Log.v("validate", "mScore = " + mScore);
         Log.v("validate", "mWrongAnswer = " + mWrongAnswer);
         Log.v("validate", "mQuestionIndex = " + mQuestionIndex);
+    }
+
+    @Override
+    public void onReplay() {
+        mScore = 0;
+        mWrongAnswer = 3;
+        initData();
+        play();
+    }
+
+    @Override
+    public void onQuit() {
+        finish();
     }
 }
